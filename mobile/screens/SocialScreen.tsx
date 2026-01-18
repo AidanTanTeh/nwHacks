@@ -174,12 +174,6 @@ export default function SocialScreen() {
                     </Text>
                   </View>
                 </View>
-
-                <Pressable className="bg-orange-500 rounded-full px-5 py-3">
-                  <Text className="text-white font-bold text-base">
-                    Wave 👋
-                  </Text>
-                </Pressable>
               </View>
             ))}
           </View>
