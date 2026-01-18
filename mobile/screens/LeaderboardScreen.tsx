@@ -84,7 +84,7 @@ export default function RankScreen() {
             <View style={[styles.row, isMe && styles.rowMe]}>
               {/* Rank */}
               <View style={{ width: 34, alignItems: "center", marginRight: 10 }}>
-                {index === 0 ? <Crown color={rankColor} size={22} /> : <Text style={[styles.rankNum, { color: rankColor }]}>{index + 1}</Text>}
+                <Text style={[styles.rankNum, { color: rankColor }]}>{index + 1}</Text>
               </View>
 
               {/* Avatar */}
