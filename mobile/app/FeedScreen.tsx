@@ -1,8 +1,30 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { Flame, Trophy, TrendingUp } from "lucide-react-native";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 
 export default function FeedScreen() {
+  // ⏱️ Countdown timer (2 hours)
+  const [secondsLeft, setSecondsLeft] = useState(2 * 60 * 60);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const hours = Math.floor(secondsLeft / 3600);
+  const minutes = Math.floor((secondsLeft % 3600) / 60);
+  const seconds = secondsLeft % 60;
+
   return (
     <ScrollView className="flex-1 bg-black px-6 pt-16">
       {/* Header */}
@@ -77,6 +99,23 @@ export default function FeedScreen() {
 
       {/* Challenges */}
       <View className="mb-24">
+        {/* Countdown Timer */}
+        <View className="bg-orange-500 rounded-3xl p-6 mb-6 items-center">
+          <Text className="text-white/90 text-sm tracking-widest mb-1">
+            TIME LEFT
+          </Text>
+
+          <Text className="text-white text-5xl font-extrabold">
+            {hours.toString().padStart(2, "0")}:
+            {minutes.toString().padStart(2, "0")}:
+            {seconds.toString().padStart(2, "0")}
+          </Text>
+
+          <Text className="text-white/80 text-sm mt-2 text-center">
+            Complete a challenge before time runs out
+          </Text>
+        </View>
+
         <View className="flex-row justify-between mb-4">
           <Text className="text-white text-2xl font-bold">
             Today’s Challenges
@@ -106,9 +145,10 @@ function Challenge({
   highlight?: boolean;
 }) {
   return (
-    <TouchableOpacity 
-        className="bg-zinc-900 rounded-2xl p-4 mb-4"
-        onPress={() => router.push("/WorkoutSelectorScreen")}>
+    <TouchableOpacity
+      className="bg-zinc-900 rounded-2xl p-4 mb-4"
+      onPress={() => router.push("/WorkoutSelectorScreen")}
+    >
       <View className="flex-row justify-between items-center mb-2">
         <View>
           <Text className="text-white font-bold">{title}</Text>

@@ -225,20 +225,20 @@ function PostCard({ post }: { post: SocialPost }) {
         </View>
       </View>
 
-      {/* actions */}
-      <View className="flex-row items-center mt-4">
-        <Heart size={26} color="white" />
-        <View className="w-6" />
-        <MessageCircle size={26} color="white" />
-        <View className="flex-1" />
-        <Text className="text-zinc-500 text-base">{post.minutesAgo}m</Text>
-      </View>
-
       {/* caption */}
       <Text className="text-white text-lg mt-4">
         <Text className="font-bold">{post.userName} </Text>
         {post.caption}
       </Text>
+
+      {/* actions */}
+      <View className="flex-row items-center mt-4">
+        
+        <View className="w-6" />
+        
+        <View className="flex-1" />
+        <Text className="text-zinc-500 text-base">{post.minutesAgo}m</Text>
+      </View>
 
       {/* divider */}
       <View className="h-px bg-zinc-900 mt-8" />
