@@ -8,20 +8,9 @@ import {
     TextInput,
 } from "react-native";
 import { Search, UserPlus2, MoreHorizontal, Heart, MessageCircle, Flame } from "lucide-react-native";
+import { useSocial, type SocialPost } from "../app/context/SocialContext";
 
 type SocialMode = "feed" | "friends";
-
-type SocialPost = {
-    id: string;
-    userName: string;
-    userAvatar: string;
-    date: string;
-    imageUrl: string;
-    typeLabel: "RUN";
-    distanceKm: number;
-    caption: string;
-    minutesAgo: number;
-};
 
 type FriendRow = {
     id: string;
@@ -31,19 +20,7 @@ type FriendRow = {
     online: boolean;
 };
 
-const MOCK_POSTS: SocialPost[] = [
-    {
-        id: "p1",
-        userName: "Sarah Sprinter",
-        userAvatar: "https://picsum.photos/90/90?1",
-        date: "1/17/2026",
-        imageUrl: "https://picsum.photos/700/900?3",
-        typeLabel: "RUN",
-        distanceKm: 5.2,
-        caption: "Crushed that 5k! Legs feel like jelly but my soul is soaring. 🚀",
-        minutesAgo: 25,
-    },
-];
+
 
 const MOCK_FRIENDS: FriendRow[] = [
     {
@@ -63,6 +40,7 @@ const MOCK_FRIENDS: FriendRow[] = [
 ];
 
 export default function SocialScreen() {
+    const { posts } = useSocial(); 
     const [mode, setMode] = useState<SocialMode>("feed");
     const [query, setQuery] = useState("");
 
@@ -119,7 +97,7 @@ export default function SocialScreen() {
 
             {mode === "feed" ? (
                 <FlatList
-                    data={MOCK_POSTS}
+                    data={posts}
                     keyExtractor={(p) => p.id}
                     contentContainerStyle={{ paddingBottom: 120 }}
                     renderItem={({ item }) => <PostCard post={item} />}
@@ -224,7 +202,7 @@ function PostCard({ post }: { post: SocialPost }) {
             {/* image card */}
             <View className="rounded-3xl overflow-hidden bg-zinc-900">
                 <Image
-                    source={{ uri: post.imageUrl }}
+                    source={{ uri: post.imageUri }}
                     className="w-full h-[520px]"
                     resizeMode="cover"
                 />

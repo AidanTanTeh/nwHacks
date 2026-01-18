@@ -6,6 +6,8 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+import { SocialProvider } from "./context/SocialContext";
+
 export const unstable_settings = {
   anchor: '(tabs)',
 };
@@ -14,6 +16,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    <SocialProvider>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -21,5 +24,6 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
+    </SocialProvider>
   );
 }
