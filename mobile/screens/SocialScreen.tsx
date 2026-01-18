@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  Pressable,
-  TextInput,
+    View,
+    Text,
+    Image,
+    FlatList,
+    Pressable,
+    TextInput,
 } from "react-native";
 import { Search, UserPlus2, MoreHorizontal, Heart, MessageCircle, Flame } from "lucide-react-native";
 import { useSocial, type SocialPost } from "../app/context/SocialContext";
@@ -13,30 +13,28 @@ import { useSocial, type SocialPost } from "../app/context/SocialContext";
 type SocialMode = "feed" | "friends";
 
 type FriendRow = {
-  id: string;
-  name: string;
-  avatar: string;
-  streakDays: number;
-  online: boolean;
+    id: string;
+    name: string;
+    avatar: string;
+    streakDays: number;
+    online: boolean;
 };
 
-
-
 const MOCK_FRIENDS: FriendRow[] = [
-  {
-    id: "f1",
-    name: "Henry Hiker",
-    avatar: "https://picsum.photos/90/90?4",
-    streakDays: 12,
-    online: true,
-  },
-  {
-    id: "f2",
-    name: "Winnie Walker",
-    avatar: "https://picsum.photos/90/90?5",
-    streakDays: 2,
-    online: false,
-  },
+    {
+        id: "f1",
+        name: "Henry Hiker",
+        avatar: "https://picsum.photos/90/90?4",
+        streakDays: 12,
+        online: true,
+    },
+    {
+        id: "f2",
+        name: "Winnie Walker",
+        avatar: "https://picsum.photos/90/90?5",
+        streakDays: 2,
+        online: false,
+    },
 ];
 
 export default function SocialScreen() {
@@ -139,31 +137,95 @@ export default function SocialScreen() {
                     <View className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-zinc-900" />
                   )}
                 </View>
+            </View>
 
-                <View className="flex-1">
-                  <Text className="text-white text-lg font-bold">
-                    {f.name}
-                  </Text>
-                  <View className="flex-row items-center mt-1">
-                    <Flame size={16} color="#f97316" />
-                    <Text className="text-zinc-400 ml-2 text-base">
-                      {f.streakDays} day streak
-                    </Text>
-                  </View>
+            {/* Divider */}
+            <View className="h-px bg-zinc-900" />
+
+            {mode === "feed" ? (
+                <FlatList
+                    data={MOCK_POSTS}
+                    keyExtractor={(p) => p.id}
+                    contentContainerStyle={{ paddingBottom: 120 }}
+                    renderItem={({ item }) => <PostCard post={item} />}
+                />
+            ) : (
+                <View className="flex-1 px-6 pt-6">
+                    {/* Search */}
+                    <View className="bg-zinc-900 rounded-2xl flex-row items-center px-4 py-4">
+                        <Search size={18} color="#9ca3af" />
+                        <TextInput
+                            value={query}
+                            onChangeText={setQuery}
+                            placeholder="Search friends..."
+                            placeholderTextColor="#6b7280"
+                            className="flex-1 ml-3 text-white text-base"
+                        />
+                    </View>
+
+                    {/* Find new friends */}
+                    <Pressable className="mt-5 rounded-3xl py-5 items-center bg-[rgba(240,101,22,0.3)]">
+                        <View className="flex-row items-center gap-3">
+                        <UserPlus2 size={22} color="#FFFFFF5F" />
+                        <Text style={{ color: 'rgba(255,255,255,0.4)' }} className="text-xl font-extrabold">
+                            Find New Friends
+                        </Text>
+                        </View>
+                    </Pressable>
+
+                    {/* Friends list */}
+                    <View className="mt-6">
+                        {filteredFriends.map((f) => (
+                            <View
+                                key={f.id}
+                                className="bg-zinc-900 rounded-2xl px-4 py-4 mb-4 flex-row items-center"
+                            >
+                                <View className="relative mr-4">
+                                    <Image
+                                        source={{ uri: f.avatar }}
+                                        className="w-14 h-14 rounded-full"
+                                    />
+                                    {f.online && (
+                                        <View className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-zinc-900" />
+                                    )}
+                                </View>
+
+                                <View className="flex-1">
+                                    <Text className="text-white text-lg font-bold">
+                                        {f.name}
+                                    </Text>
+                                    <View className="flex-row items-center mt-1">
+                                        <Flame size={16} color="#f97316" />
+                                        <Text className="text-zinc-400 ml-2 text-base">
+                                            {f.streakDays} day streak
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Pressable
+                                    disabled={sentRequests.has(f.id)}
+                                    onPress={() => sendFriendRequest(f.id)}
+                                    className={`rounded-full px-5 py-3 ${sentRequests.has(f.id)
+                                        ? "bg-zinc-700"
+                                        : "bg-orange-500"
+                                        }`}
+                                >
+                                    <Text
+                                        className={`font-bold text-base ${sentRequests.has(f.id)
+                                            ? "text-zinc-400"
+                                            : "text-white"
+                                            }`}
+                                    >
+                                        {sentRequests.has(f.id) ? "Request Sent" : "Add"}
+                                    </Text>
+                                </Pressable>
+
+                            </View>
+                        ))}
+                    </View>
                 </View>
-                <Pressable className="bg-orange-500 rounded-full px-5 py-3">
-                 <Text className="text-white font-bold text-base">
-                   Add
-                 </Text>
-               </Pressable>
-
-              </View>
-            ))}
-          </View>
+            )}
         </View>
-      )}
-    </View>
-  );
+    );
 }
 
 function PostCard({ post }: { post: SocialPost }) {

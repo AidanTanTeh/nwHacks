@@ -69,12 +69,7 @@ const Feed: React.FC<FeedProps> = ({ runs, friends, currentUser }) => {
 
                         {/* Action Bar */}
                         <div className="flex items-center gap-6 mb-3">
-                            <button className="flex items-center gap-2 text-zinc-900 dark:text-white transition-colors">
-                                <Heart size={24} />
-                            </button>
-                            <button className="flex items-center gap-2 text-zinc-900 dark:text-white transition-colors">
-                                <MessageCircle size={24} />
-                            </button>
+                        
                              <div className="flex-1"></div>
                              <div className="flex items-center gap-4 text-xs font-medium text-zinc-500 dark:text-zinc-400">
                                 <span className="flex items-center gap-1"><Clock size={14} /> {Math.floor(run.durationSeconds / 60)}m</span>
