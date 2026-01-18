@@ -8,9 +8,20 @@ import {
     TextInput,
 } from "react-native";
 import { Search, UserPlus2, MoreHorizontal, Heart, MessageCircle, Flame } from "lucide-react-native";
-import { useSocial, type SocialPost } from "../app/context/SocialContext";
 
 type SocialMode = "feed" | "friends";
+
+type SocialPost = {
+    id: string;
+    userName: string;
+    userAvatar: string;
+    date: string;
+    imageUrl: string;
+    typeLabel: "RUN";
+    distanceKm: number;
+    caption: string;
+    minutesAgo: number;
+};
 
 type FriendRow = {
     id: string;
@@ -19,6 +30,20 @@ type FriendRow = {
     streakDays: number;
     online: boolean;
 };
+
+const MOCK_POSTS: SocialPost[] = [
+    {
+        id: "p1",
+        userName: "Sarah Sprinter",
+        userAvatar: "https://picsum.photos/90/90?1",
+        date: "1/17/2026",
+        imageUrl: "https://picsum.photos/700/900?3",
+        typeLabel: "RUN",
+        distanceKm: 5.2,
+        caption: "Crushed that 5k! Legs feel like jelly but my soul is soaring. 🚀",
+        minutesAgo: 25,
+    },
+];
 
 const MOCK_FRIENDS: FriendRow[] = [
     {
@@ -38,104 +63,54 @@ const MOCK_FRIENDS: FriendRow[] = [
 ];
 
 export default function SocialScreen() {
-  const { posts } = useSocial(); 
-  const [mode, setMode] = useState<SocialMode>("feed");
-  const [query, setQuery] = useState("");
+    const [mode, setMode] = useState<SocialMode>("feed");
+    const [query, setQuery] = useState("");
 
-  const filteredFriends = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return MOCK_FRIENDS;
-    return MOCK_FRIENDS.filter((f) => f.name.toLowerCase().includes(q));
-  }, [query]);
+    const [sentRequests, setSentRequests] = useState<Set<string>>(new Set());
 
-  return (
-    <View className="flex-1 bg-black">
-      {/* Header */}
-      <View className="px-6 pt-16 pb-4">
-        <Text className="text-white text-4xl font-extrabold">Social</Text>
+    const sendFriendRequest = (friendId: string) => {
+        setSentRequests((prev) => new Set(prev).add(friendId));
+    };
 
-        {/* Segmented control */}
-        <View className="mt-6 flex-row gap-4">
-          <Pressable
-            onPress={() => setMode("feed")}
-            className={`flex-1 rounded-2xl py-4 items-center ${
-              mode === "feed" ? "bg-orange-500" : "bg-zinc-900"
-            }`}
-          >
-            <Text
-              className={`text-lg font-bold ${
-                mode === "feed" ? "text-white" : "text-zinc-400"
-              }`}
-            >
-              Feed
-            </Text>
-          </Pressable>
+    const filteredFriends = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!q) return MOCK_FRIENDS;
+        return MOCK_FRIENDS.filter((f) => f.name.toLowerCase().includes(q));
+    }, [query]);
 
-          <Pressable
-            onPress={() => setMode("friends")}
-            className={`flex-1 rounded-2xl py-4 items-center ${
-              mode === "friends" ? "bg-orange-500" : "bg-zinc-900"
-            }`}
-          >
-            <Text
-              className={`text-lg font-bold ${
-                mode === "friends" ? "text-white" : "text-zinc-400"
-              }`}
-            >
-              Friends
-            </Text>
-          </Pressable>
-        </View>
-      </View>
+    return (
+        <View className="flex-1 bg-black">
+            {/* Header */}
+            <View className="px-6 pt-16 pb-4">
+                <Text className="text-white text-4xl font-extrabold">Social</Text>
 
-      {/* Divider */}
-      <View className="h-px bg-zinc-900" />
+                {/* Segmented control */}
+                <View className="mt-6 flex-row gap-4">
+                    <Pressable
+                        onPress={() => setMode("feed")}
+                        className={`flex-1 rounded-2xl py-4 items-center ${mode === "feed" ? "bg-orange-500" : "bg-zinc-900"
+                            }`}
+                    >
+                        <Text
+                            className={`text-lg font-bold ${mode === "feed" ? "text-white" : "text-zinc-400"
+                                }`}
+                        >
+                            Feed
+                        </Text>
+                    </Pressable>
 
-      {mode === "feed" ? (
-        <FlatList
-  data={posts}
-  keyExtractor={(p) => p.id}
-  renderItem={({ item }) => <PostCard post={item} />}
-/>
-      ) : (
-        <View className="flex-1 px-6 pt-6">
-          {/* Search */}
-          <View className="bg-zinc-900 rounded-2xl flex-row items-center px-4 py-4">
-            <Search size={18} color="#9ca3af" />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Search friends..."
-              placeholderTextColor="#6b7280"
-              className="flex-1 ml-3 text-white text-base"
-            />
-          </View>
-
-          {/* Find new friends */}
-          <Pressable className="mt-5 rounded-3xl py-5 items-center bg-orange-500">
-            <View className="flex-row items-center gap-3">
-              <UserPlus2 size={22} color="white" />
-              <Text className="text-white text-xl font-extrabold">
-                Find New Friends
-              </Text>
-            </View>
-          </Pressable>
-
-          {/* Friends list */}
-          <View className="mt-6">
-            {filteredFriends.map((f) => (
-              <View
-                key={f.id}
-                className="bg-zinc-900 rounded-2xl px-4 py-4 mb-4 flex-row items-center"
-              >
-                <View className="relative mr-4">
-                  <Image
-                    source={{ uri: f.avatar }}
-                    className="w-14 h-14 rounded-full"
-                  />
-                  {f.online && (
-                    <View className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-zinc-900" />
-                  )}
+                    <Pressable
+                        onPress={() => setMode("friends")}
+                        className={`flex-1 rounded-2xl py-4 items-center ${mode === "friends" ? "bg-orange-500" : "bg-zinc-900"
+                            }`}
+                    >
+                        <Text
+                            className={`text-lg font-bold ${mode === "friends" ? "text-white" : "text-zinc-400"
+                                }`}
+                        >
+                            Friends
+                        </Text>
+                    </Pressable>
                 </View>
             </View>
 
@@ -229,19 +204,58 @@ export default function SocialScreen() {
 }
 
 function PostCard({ post }: { post: SocialPost }) {
-  return (
-    <View className="px-6 pt-6">
-      <View className="rounded-3xl overflow-hidden bg-zinc-900">
-        <Image source={{ uri: post.imageUri }} className="w-full h-[520px]" resizeMode="cover" />
+    return (
+        <View className="px-6 pt-6">
+            {/* top row */}
+            <View className="flex-row items-center justify-between mb-4">
+                <View className="flex-row items-center">
+                    <Image
+                        source={{ uri: post.userAvatar }}
+                        className="w-12 h-12 rounded-full"
+                    />
+                    <View className="ml-4">
+                        <Text className="text-white text-xl font-bold">{post.userName}</Text>
+                        <Text className="text-zinc-500">{post.date}</Text>
+                    </View>
+                </View>
+                <MoreHorizontal size={22} color="#9ca3af" />
+            </View>
 
-        <View className="absolute top-5 left-5 bg-black/50 rounded-2xl px-4 py-3">
-          <Text className="text-white/80 font-bold">{post.workoutType}</Text>
-          <Text className="text-white text-3xl font-extrabold">
-            {post.distanceKm} <Text className="text-white/80 text-lg font-bold">km</Text>
-          </Text>
-          <Text className="text-white/80 font-bold">{post.pace}/km</Text>
+            {/* image card */}
+            <View className="rounded-3xl overflow-hidden bg-zinc-900">
+                <Image
+                    source={{ uri: post.imageUrl }}
+                    className="w-full h-[520px]"
+                    resizeMode="cover"
+                />
+
+                {/* distance badge */}
+                <View className="absolute top-5 left-5 bg-black/50 rounded-2xl px-4 py-3">
+                    <Text className="text-white/80 font-bold">{post.typeLabel}</Text>
+                    <Text className="text-white text-3xl font-extrabold">
+                        {post.distanceKm.toFixed(2)}{" "}
+                        <Text className="text-white/80 text-lg font-bold">km</Text>
+                    </Text>
+                </View>
+            </View>
+
+            {/* caption */}
+            <Text className="text-white text-lg mt-4">
+                <Text className="font-bold">{post.userName} </Text>
+                {post.caption}
+            </Text>
+
+            {/* actions */}
+            <View className="flex-row items-center mt-4">
+
+                <View className="w-6" />
+
+                <View className="flex-1" />
+                <Text className="text-zinc-500 text-base">{post.minutesAgo}m</Text>
+            </View>
+
+            {/* divider */}
+            <View className="h-px bg-zinc-900 mt-8" />
         </View>
-      </View>
-    </View>
-  );
+    );
 }
