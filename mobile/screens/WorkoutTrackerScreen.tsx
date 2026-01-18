@@ -186,7 +186,15 @@ export default function WorkoutTrackerScreen() {
     trackingRef.current = "IDLE";
     setTracking("IDLE");
     // TODO: pass stats somewhere (router params, store, context)
-    router.back();
+    router.push({
+    pathname: "/run/selfie",
+    params: {
+      distanceKm: distanceKm.toFixed(2),
+      durationSec: seconds,
+      pace: pace,
+      workoutType: workoutType ?? "RUN",
+    },
+  });
   };
 
   const onCancel = () => {
