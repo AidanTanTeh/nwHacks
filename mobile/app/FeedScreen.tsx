@@ -37,7 +37,6 @@ export default function FeedScreen() {
                         Ready to keep the streak alive?
                     </Text>
                 </View>
-
                 <View className="w-20 h-20 rounded-full items-center justify-center overflow-hidden">
                     <Image
                         source={require("../assets/images/Running in Track 3.png")}
@@ -46,7 +45,6 @@ export default function FeedScreen() {
                         style={{ transform: [{ scaleX: -1 }] }}
                     />
                 </View>
-
             </View>
 
             {/* Streak Card */}

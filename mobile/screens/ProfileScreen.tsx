@@ -29,7 +29,7 @@ export default function ProfileScreen() {
           <Image
             source={{ uri: "https://picsum.photos/100/100" }}
             className="w-32 h-32 rounded-full"
-            style={{ transform: [{ scaleX: -1 }] }} // optional flip
+            style={{ transform: [{ scaleX: -1 }] }}
             resizeMode="cover"
           />
         </View>
