@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Loader2, Settings, Share2, Medal, Moon, Sun, ChevronRight, Home as HomeIcon, Plus, BarChart2, User as UserIcon, Users, Trophy, Flame, TrendingUp, Check, X, Camera, RotateCcw, Play, Pause, Square, MapPin, Zap, Clock, Heart, MessageCircle, MoreHorizontal, UserPlus, Search, Crown } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Loader2, Settings, Moon, Sun, ChevronRight, Home as HomeIcon, Plus, BarChart2, User as UserIcon, Users, Trophy, Flame, TrendingUp, Check, X, Camera, RotateCcw, Play, Pause, Square, Clock, Heart, MessageCircle, MoreHorizontal, UserPlus, Search, Crown } from 'lucide-react';
 
 // Types
 enum AppView {
@@ -277,16 +277,28 @@ const Social: React.FC<{ workouts: WorkoutSession[]; currentUser: User; friends:
             })}
           </div>
         ) : (
-          <>
-            <button onClick={() => { setCapturedImage(null); navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } }).then(s => { setStream(s); if (videoRef.current) videoRef.current.srcObject = s; }); }} className="flex flex-col items-center gap-1 text-zinc-400">
-              <div className="p-4 bg-zinc-800 rounded-full"><RotateCcw size={24} /></div>
-              <span className="text-xs font-medium">Retake</span>
+          <div className="p-6">
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+              <input type="text" placeholder="Search friends..." className="w-full bg-white dark:bg-zinc-900 rounded-xl py-3 pl-10 pr-4 text-sm border border-zinc-200 dark:border-zinc-800" />
+            </div>
+            <button className="w-full mb-6 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl font-bold flex items-center justify-center gap-2">
+              <UserPlus size={20} /> Find New Friends
             </button>
-            <button onClick={() => capturedImage && onCapture(capturedImage)} className="flex flex-col items-center gap-1 text-orange-400">
-              <div className="p-4 bg-orange-600 rounded-full text-white"><Check size={28} strokeWidth={3} /></div>
-              <span className="text-xs font-bold text-orange-500">Post Run</span>
-            </button>
-          </>
+            {friends.filter(f => f.isOnline).map((friend) => (
+              <div key={friend.id} className="flex items-center p-3 mb-2 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <div className="relative mr-3">
+                  <img src={friend.avatar} alt={friend.name} className="w-12 h-12 rounded-full" />
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-zinc-900"></div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white">{friend.name}</h3>
+                  <p className="text-xs text-zinc-500"><Flame size={12} className="inline text-orange-500" /> {friend.currentStreak} day streak</p>
+                </div>
+                <button className="text-xs bg-orange-500 text-white px-3 py-1.5 rounded-full font-bold">Wave 👋</button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>
@@ -343,6 +355,182 @@ const Rank: React.FC<{ friends: Friend[]; currentUser: User }> = ({ friends, cur
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+};
+
+const WorkoutSelector: React.FC<{ onSelectWorkout: (type: WorkoutType) => void; onClose: () => void }> = ({ onSelectWorkout, onClose }) => {
+  const workouts = [
+    { type: WorkoutType.RUN, name: 'Run', icon: '🏃', gradient: 'from-orange-500 to-red-500', available: true },
+    { type: WorkoutType.WALK, name: 'Walk', icon: '🚶', gradient: 'from-green-500 to-emerald-500', available: true },
+    { type: WorkoutType.CYCLING, name: 'Cycling', icon: '🚴', gradient: 'from-blue-500 to-cyan-500', available: false },
+    { type: WorkoutType.SWIMMING, name: 'Swimming', icon: '🏊', gradient: 'from-blue-400 to-indigo-500', available: false },
+    { type: WorkoutType.YOGA, name: 'Yoga', icon: '🧘', gradient: 'from-purple-500 to-pink-500', available: false },
+    { type: WorkoutType.OTHER, name: 'Other', icon: '💪', gradient: 'from-zinc-500 to-zinc-600', available: false },
+  ];
+
+  return (
+    <div className="h-full bg-zinc-50 dark:bg-zinc-950 flex flex-col">
+      <div className="pt-6 pb-4 px-6">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-2xl font-black text-zinc-900 dark:text-white">Choose Workout</h1>
+          <button onClick={onClose} className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
+            <X className="text-zinc-500" size={24} />
+          </button>
+        </div>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">Select your workout type to get started</p>
+      </div>
+      <div className="flex-1 overflow-y-auto no-scrollbar px-6 pb-32">
+        <div className="grid grid-cols-2 gap-4">
+          {workouts.map((workout) => (
+            <button key={workout.type} onClick={() => workout.available && onSelectWorkout(workout.type)} disabled={!workout.available} className={`relative overflow-hidden rounded-3xl p-6 aspect-square flex flex-col items-center justify-center ${workout.available ? `bg-gradient-to-br ${workout.gradient} hover:scale-105 active:scale-95` : 'bg-zinc-200 dark:bg-zinc-800 opacity-50'}`}>
+              {workout.available && <div className="absolute top-0 right-0 w-20 h-20 bg-white/20 rounded-full blur-2xl"></div>}
+              <span className="text-5xl mb-3">{workout.icon}</span>
+              <span className={`font-bold text-lg ${workout.available ? 'text-white' : 'text-zinc-500'}`}>{workout.name}</span>
+              {!workout.available && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                  <span className="text-white text-xs font-bold uppercase px-3 py-1 bg-black/50 rounded-full">Coming Soon</span>
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const WorkoutTracker: React.FC<{ workoutType: WorkoutType; onFinish: (stats: any) => void; onCancel: () => void }> = ({ workoutType, onFinish, onCancel }) => {
+  const [trackingState, setTrackingState] = useState<TrackingState>(TrackingState.IDLE);
+  const [duration, setDuration] = useState(0);
+  const [distance, setDistance] = useState(0);
+  const startTime = useRef<number | null>(null);
+  const needsGPS = workoutType === WorkoutType.RUN || workoutType === WorkoutType.WALK;
+
+  useEffect(() => {
+    let interval: number;
+    if (trackingState === TrackingState.RUNNING) {
+      if (!startTime.current) startTime.current = Date.now();
+      interval = window.setInterval(() => {
+        setDuration(Math.floor((Date.now() - startTime.current!) / 1000));
+        if (needsGPS) setDistance(prev => prev + 0.01);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [trackingState, needsGPS]);
+
+  const formatTime = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleStop = () => {
+    setTrackingState(TrackingState.IDLE);
+    const pace = distance > 0 ? (duration / 60) / distance : 0;
+    const paceMin = Math.floor(pace);
+    const paceSec = Math.round((pace - paceMin) * 60);
+    onFinish({ duration, distance: needsGPS ? distance : undefined, pace: needsGPS ? `${paceMin}:${paceSec.toString().padStart(2, '0')}` : undefined });
+  };
+
+  return (
+    <div className="h-full flex flex-col bg-zinc-50 dark:bg-zinc-950 relative">
+      <div className="pt-8 px-6 flex justify-between items-center z-10">
+        <div className="flex items-center gap-3">
+          <span className="text-4xl">{workoutType === WorkoutType.RUN ? '🏃' : '🚶'}</span>
+          <h1 className="text-xl font-black text-zinc-900 dark:text-white">{workoutType}</h1>
+        </div>
+        <button onClick={onCancel} className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
+          <X className="text-zinc-500" size={24} />
+        </button>
+      </div>
+      <div className="flex-1 flex flex-col items-center justify-center z-10">
+        <div className="text-center mb-10">
+          <div className="text-8xl font-black text-zinc-900 dark:text-white">{needsGPS ? distance.toFixed(2) : formatTime(duration)}</div>
+          <div className="text-zinc-500 font-bold uppercase text-sm mt-2">{needsGPS ? 'Kilometers' : 'Duration'}</div>
+        </div>
+      </div>
+      <div className="pb-36 px-8 flex justify-center z-10">
+        {trackingState === TrackingState.IDLE && (
+          <button onClick={() => setTrackingState(TrackingState.RUNNING)} className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center active:scale-90">
+            <Play fill="white" className="text-white ml-1" size={40} />
+          </button>
+        )}
+        {trackingState === TrackingState.RUNNING && (
+          <button onClick={() => setTrackingState(TrackingState.PAUSED)} className="w-24 h-24 bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 rounded-full flex items-center justify-center">
+            <Pause fill="currentColor" className="text-zinc-900 dark:text-white" size={40} />
+          </button>
+        )}
+        {trackingState === TrackingState.PAUSED && (
+          <div className="flex items-center gap-8">
+            <button onClick={() => setTrackingState(TrackingState.RUNNING)} className="w-20 h-20 bg-white dark:bg-zinc-800 rounded-full flex items-center justify-center">
+              <Play fill="currentColor" size={28} className="text-zinc-900 dark:text-white ml-1" />
+            </button>
+            <button onClick={handleStop} className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center">
+              <Square fill="white" size={32} className="text-white" />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const CameraCapture: React.FC<{ onCapture: (img: string) => void; onCancel: () => void }> = ({ onCapture, onCancel }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+      .then(s => { setStream(s); if (videoRef.current) videoRef.current.srcObject = s; });
+    return () => stream?.getTracks().forEach(t => t.stop());
+  }, []);
+
+  const capture = () => {
+    if (videoRef.current && canvasRef.current) {
+      const canvas = canvasRef.current;
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(videoRef.current, 0, 0);
+        setCapturedImage(canvas.toDataURL('image/jpeg', 0.8));
+        stream?.getTracks().forEach(t => t.stop());
+      }
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+      <canvas ref={canvasRef} className="hidden" />
+      <div className="relative flex-1 overflow-hidden">
+        {!capturedImage ? <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover transform -scale-x-100" /> : <img src={capturedImage} alt="Captured" className="absolute inset-0 w-full h-full object-cover" />}
+        <button onClick={onCancel} className="absolute top-4 left-4 p-2 bg-black/40 backdrop-blur-md rounded-full text-white">
+          <X size={24} />
+        </button>
+      </div>
+      <div className="h-32 bg-black flex items-center justify-center gap-12">
+        {!capturedImage ? (
+          <button onClick={capture} className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center">
+            <div className="w-16 h-16 bg-white rounded-full"></div>
+          </button>
+        ) : (
+          <>
+            <button onClick={() => { setCapturedImage(null); navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } }).then(s => { setStream(s); if (videoRef.current) videoRef.current.srcObject = s; }); }} className="flex flex-col items-center gap-1 text-zinc-400">
+              <div className="p-4 bg-zinc-800 rounded-full"><RotateCcw size={24} /></div>
+              <span className="text-xs font-medium">Retake</span>
+            </button>
+            <button onClick={() => capturedImage && onCapture(capturedImage)} className="flex flex-col items-center gap-1 text-orange-400">
+              <div className="p-4 bg-orange-600 rounded-full text-white"><Check size={28} strokeWidth={3} /></div>
+              <span className="text-xs font-bold text-orange-500">Post Run</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -487,7 +675,7 @@ const App: React.FC = () => {
               </div>
               <div className="w-full bg-white dark:bg-zinc-900/30 rounded-3xl p-6 border border-zinc-200 dark:border-white/5 mb-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Medal className="text-yellow-500" size={20} />
+                  <Trophy className="text-yellow-500" size={20} />
                   <h3 className="font-bold text-zinc-900 dark:text-white">Achievements</h3>
                 </div>
                 <div className="space-y-3">
@@ -531,189 +719,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App; (
-          <div className="p-6">
-            <div className="relative mb-6">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
-              <input type="text" placeholder="Search friends..." className="w-full bg-white dark:bg-zinc-900 rounded-xl py-3 pl-10 pr-4 text-sm border border-zinc-200 dark:border-zinc-800" />
-            </div>
-            <button className="w-full mb-6 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl font-bold flex items-center justify-center gap-2">
-              <UserPlus size={20} /> Find New Friends
-            </button>
-            {friends.filter(f => f.isOnline).map((friend) => (
-              <div key={friend.id} className="flex items-center p-3 mb-2 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                <div className="relative mr-3">
-                  <img src={friend.avatar} alt={friend.name} className="w-12 h-12 rounded-full" />
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-zinc-900"></div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white">{friend.name}</h3>
-                  <p className="text-xs text-zinc-500"><Flame size={12} className="inline text-orange-500" /> {friend.currentStreak} day streak</p>
-                </div>
-                <button className="text-xs bg-orange-500 text-white px-3 py-1.5 rounded-full font-bold">Wave 👋</button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const WorkoutSelector: React.FC<{ onSelectWorkout: (type: WorkoutType) => void; onClose: () => void }> = ({ onSelectWorkout, onClose }) => {
-  const workouts = [
-    { type: WorkoutType.RUN, name: 'Run', icon: '🏃', gradient: 'from-orange-500 to-red-500', available: true },
-    { type: WorkoutType.WALK, name: 'Walk', icon: '🚶', gradient: 'from-green-500 to-emerald-500', available: true },
-    { type: WorkoutType.CYCLING, name: 'Cycling', icon: '🚴', gradient: 'from-blue-500 to-cyan-500', available: false },
-    { type: WorkoutType.SWIMMING, name: 'Swimming', icon: '🏊', gradient: 'from-blue-400 to-indigo-500', available: false },
-    { type: WorkoutType.YOGA, name: 'Yoga', icon: '🧘', gradient: 'from-purple-500 to-pink-500', available: false },
-    { type: WorkoutType.OTHER, name: 'Other', icon: '💪', gradient: 'from-zinc-500 to-zinc-600', available: false },
-  ];
-
-  return (
-    <div className="h-full bg-zinc-50 dark:bg-zinc-950 flex flex-col">
-      <div className="pt-6 pb-4 px-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-black text-zinc-900 dark:text-white">Choose Workout</h1>
-          <button onClick={onClose} className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
-            <X className="text-zinc-500" size={24} />
-          </button>
-        </div>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">Select your workout type to get started</p>
-      </div>
-      <div className="flex-1 overflow-y-auto no-scrollbar px-6 pb-32">
-        <div className="grid grid-cols-2 gap-4">
-          {workouts.map((workout) => (
-            <button key={workout.type} onClick={() => workout.available && onSelectWorkout(workout.type)} disabled={!workout.available} className={`relative overflow-hidden rounded-3xl p-6 aspect-square flex flex-col items-center justify-center ${workout.available ? `bg-gradient-to-br ${workout.gradient} hover:scale-105 active:scale-95` : 'bg-zinc-200 dark:bg-zinc-800 opacity-50'}`}>
-              {workout.available && <div className="absolute top-0 right-0 w-20 h-20 bg-white/20 rounded-full blur-2xl"></div>}
-              <span className="text-5xl mb-3">{workout.icon}</span>
-              <span className={`font-bold text-lg ${workout.available ? 'text-white' : 'text-zinc-500'}`}>{workout.name}</span>
-              {!workout.available && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                  <span className="text-white text-xs font-bold uppercase px-3 py-1 bg-black/50 rounded-full">Coming Soon</span>
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const WorkoutTracker: React.FC<{ workoutType: WorkoutType; onFinish: (stats: any) => void; onCancel: () => void }> = ({ workoutType, onFinish, onCancel }) => {
-  const [trackingState, setTrackingState] = useState<TrackingState>(TrackingState.IDLE);
-  const [duration, setDuration] = useState(0);
-  const [distance, setDistance] = useState(0);
-  const startTime = useRef<number | null>(null);
-  const needsGPS = workoutType === WorkoutType.RUN || workoutType === WorkoutType.WALK;
-
-  useEffect(() => {
-    let interval: number;
-    if (trackingState === TrackingState.RUNNING) {
-      if (!startTime.current) startTime.current = Date.now();
-      interval = window.setInterval(() => setDuration(Math.floor((Date.now() - startTime.current!) / 1000)), 1000);
-    }
-    return () => clearInterval(interval);
-  }, [trackingState]);
-
-  const formatTime = (sec: number) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  };
-
-  const handleStop = () => {
-    setTrackingState(TrackingState.IDLE);
-    const pace = distance > 0 ? (duration / 60) / distance : 0;
-    const paceMin = Math.floor(pace);
-    const paceSec = Math.round((pace - paceMin) * 60);
-    onFinish({ duration, distance: needsGPS ? distance : undefined, pace: needsGPS ? `${paceMin}:${paceSec.toString().padStart(2, '0')}` : undefined });
-  };
-
-  return (
-    <div className="h-full flex flex-col bg-zinc-50 dark:bg-zinc-950 relative">
-      <div className="pt-8 px-6 flex justify-between items-center z-10">
-        <div className="flex items-center gap-3">
-          <span className="text-4xl">{workoutType === WorkoutType.RUN ? '🏃' : '🚶'}</span>
-          <h1 className="text-xl font-black text-zinc-900 dark:text-white">{workoutType}</h1>
-        </div>
-        <button onClick={onCancel} className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
-          <X className="text-zinc-500" size={24} />
-        </button>
-      </div>
-      <div className="flex-1 flex flex-col items-center justify-center z-10">
-        <div className="text-center mb-10">
-          <div className="text-8xl font-black text-zinc-900 dark:text-white">{needsGPS ? distance.toFixed(2) : formatTime(duration)}</div>
-          <div className="text-zinc-500 font-bold uppercase text-sm mt-2">{needsGPS ? 'Kilometers' : 'Duration'}</div>
-        </div>
-      </div>
-      <div className="pb-36 px-8 flex justify-center z-10">
-        {trackingState === TrackingState.IDLE && (
-          <button onClick={() => setTrackingState(TrackingState.RUNNING)} className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center active:scale-90">
-            <Play fill="white" className="text-white ml-1" size={40} />
-          </button>
-        )}
-        {trackingState === TrackingState.RUNNING && (
-          <button onClick={() => setTrackingState(TrackingState.PAUSED)} className="w-24 h-24 bg-white dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 rounded-full flex items-center justify-center">
-            <Pause fill="currentColor" className="text-zinc-900 dark:text-white" size={40} />
-          </button>
-        )}
-        {trackingState === TrackingState.PAUSED && (
-          <div className="flex items-center gap-8">
-            <button onClick={() => setTrackingState(TrackingState.RUNNING)} className="w-20 h-20 bg-white dark:bg-zinc-800 rounded-full flex items-center justify-center">
-              <Play fill="currentColor" size={28} className="text-zinc-900 dark:text-white ml-1" />
-            </button>
-            <button onClick={handleStop} className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center">
-              <Square fill="white" size={32} className="text-white" />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const CameraCapture: React.FC<{ onCapture: (img: string) => void; onCancel: () => void }> = ({ onCapture, onCancel }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
-      .then(s => { setStream(s); if (videoRef.current) videoRef.current.srcObject = s; });
-    return () => stream?.getTracks().forEach(t => t.stop());
-  }, []);
-
-  const capture = () => {
-    if (videoRef.current && canvasRef.current) {
-      const canvas = canvasRef.current;
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(videoRef.current, 0, 0);
-        setCapturedImage(canvas.toDataURL('image/jpeg', 0.8));
-        stream?.getTracks().forEach(t => t.stop());
-      }
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col">
-      <canvas ref={canvasRef} className="hidden" />
-      <div className="relative flex-1 overflow-hidden">
-        {!capturedImage ? <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover transform -scale-x-100" /> : <img src={capturedImage} alt="Captured" className="absolute inset-0 w-full h-full object-cover" />}
-        <button onClick={onCancel} className="absolute top-4 left-4 p-2 bg-black/40 backdrop-blur-md rounded-full text-white">
-          <X size={24} />
-        </button>
-      </div>
-      <div className="h-32 bg-black flex items-center justify-center gap-12">
-        {!capturedImage ? (
-          <button onClick={capture} className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center">
-            <div className="w-16 h-16 bg-white rounded-full"></div>
-          </button>
-        ) :
+export default App;
