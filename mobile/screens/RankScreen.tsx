@@ -115,7 +115,7 @@ function RowItem({ row }: { row: Row }) {
       <View className="flex-row items-center gap-4">
         <View className="w-8 items-center">
           {isTop ? (
-            <Ionicons name="crown" size={26} color="#f59e0b" />
+            <Ionicons name="star" size={26} color="#f59e0b" />
           ) : (
             <Text className="text-zinc-500 text-3xl font-extrabold">{row.rank}</Text>
           )}

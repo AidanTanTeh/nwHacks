@@ -55,7 +55,6 @@ const decreaseGoal = () => {
       </SectionCard>
 
       {/* Goal setting */}
-      {/* Goal Setting */}
 <View className="mt-6 rounded-3xl bg-zinc-900/60 px-5 py-5">
   {/* Header */}
   <View className="flex-row items-center gap-3 mb-4">
@@ -65,12 +64,9 @@ const decreaseGoal = () => {
 
   {/* Goal Row */}
   <View className="flex-row items-center gap-3 bg-zinc-800/40 rounded-2xl px-4 py-4">
-    {/* Icon bubble */}
-    <View className="w-10 h-10 rounded-full bg-purple-500/20 items-center justify-center" />
-
     {/* Goal text */}
     <View>
-      <Text className="text-white font-bold text-sm">Current Goal:</Text>
+      <Text className="text-white font-bold text-sm">Current Goal</Text>
       <Text className="text-zinc-400 text-sm">{goal}.0 km</Text>
     </View>
 

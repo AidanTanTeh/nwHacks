@@ -48,17 +48,17 @@ const MOCK_POSTS: SocialPost[] = [
 const MOCK_FRIENDS: FriendRow[] = [
   {
     id: "f1",
-    name: "Sarah Sprinter",
+    name: "Henry Hiker",
     avatar: "https://picsum.photos/90/90?4",
-    streakDays: 8,
+    streakDays: 12,
     online: true,
   },
   {
     id: "f2",
-    name: "Jess Jogger",
+    name: "Winnie Walker",
     avatar: "https://picsum.photos/90/90?5",
-    streakDays: 3,
-    online: true,
+    streakDays: 2,
+    online: false,
   },
 ];
 
@@ -174,12 +174,12 @@ export default function SocialScreen() {
                     </Text>
                   </View>
                 </View>
-
                 <Pressable className="bg-orange-500 rounded-full px-5 py-3">
-                  <Text className="text-white font-bold text-base">
-                    Wave 👋
-                  </Text>
-                </Pressable>
+                 <Text className="text-white font-bold text-base">
+                   Add
+                 </Text>
+               </Pressable>
+
               </View>
             ))}
           </View>
