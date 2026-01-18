@@ -19,7 +19,7 @@ export default function WorkoutSelectorScreen() {
       {/* Cards */}
       <View className="mt-8 flex-row gap-4">
         <Pressable
-          onPress={() => router.push({ pathname: "/run/tracker", params: { type: "run" } })}
+          onPress={() => router.push({ pathname: "/run/tracker", params: { workoutType: "RUN" } })}
           className="flex-1 rounded-3xl overflow-hidden"
           style={{
             backgroundColor: "transparent",
@@ -32,7 +32,7 @@ export default function WorkoutSelectorScreen() {
         </Pressable>
 
         <Pressable
-          onPress={() => router.push({ pathname: "/run/tracker", params: { type: "walk" } })}
+          onPress={() => router.push({ pathname: "/run/tracker", params: { workoutType: "WALK" } })}
           className="flex-1 rounded-3xl overflow-hidden"
         >
           <View className="rounded-3xl bg-green-500 py-16 items-center justify-center">
