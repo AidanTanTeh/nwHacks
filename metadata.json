@@ -1,0 +1,8 @@
+{
+  "name": "StrideReal",
+  "description": "A social fitness app combining run tracking, weekly goals, and post-run selfies. Compete with friends on the leaderboard and capture the moment.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
