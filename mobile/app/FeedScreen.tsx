@@ -100,7 +100,7 @@ export default function FeedScreen() {
       {/* Challenges */}
       <View className="mb-24">
         {/* Countdown Timer */}
-        <View className="bg-orange-500 rounded-3xl p-6 mb-6 items-center">
+        <View className="bg-red-500 rounded-3xl p-6 mb-6 items-center">
           <Text className="text-white/90 text-sm tracking-widest mb-1">
             TIME LEFT
           </Text>

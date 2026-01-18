@@ -139,12 +139,12 @@ export default function SocialScreen() {
                     </View>
 
                     {/* Find new friends */}
-                    <Pressable className="mt-5 rounded-3xl py-5 items-center bg-orange-500">
+                    <Pressable className="mt-5 rounded-3xl py-5 items-center bg-[rgba(240,101,22,0.3)]">
                         <View className="flex-row items-center gap-3">
-                            <UserPlus2 size={22} color="white" />
-                            <Text className="text-white text-xl font-extrabold">
-                                Find New Friends
-                            </Text>
+                        <UserPlus2 size={22} color="#FFFFFF5F" />
+                        <Text style={{ color: 'rgba(255,255,255,0.4)' }} className="text-xl font-extrabold">
+                            Find New Friends
+                        </Text>
                         </View>
                     </Pressable>
 
