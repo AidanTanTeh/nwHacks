@@ -1,19 +1,32 @@
 import { GoogleGenAI } from "@google/genai";
-import { RunSession } from "../types";
+import { WorkoutType } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const generateRunCaption = async (
+export const generateWorkoutCaption = async (
   imageBase64: string,
-  runStats: Pick<RunSession, 'distanceKm' | 'pace' | 'durationSeconds'>
+  workoutStats: {
+    workoutType: WorkoutType;
+    distanceKm?: number;
+    pace?: string;
+    durationSeconds: number;
+  }
 ): Promise<string> => {
   try {
+    let statsText = `- Duration: ${Math.floor(workoutStats.durationSeconds / 60)} minutes`;
+    
+    if (workoutStats.distanceKm) {
+      statsText += `\n- Distance: ${workoutStats.distanceKm.toFixed(2)} km`;
+    }
+    
+    if (workoutStats.pace) {
+      statsText += `\n- Pace: ${workoutStats.pace} min/km`;
+    }
+
     const prompt = `
-      I just finished a run recorded on my fitness app.
+      I just finished a ${workoutStats.workoutType.toLowerCase()} workout on my fitness app.
       Here are the stats:
-      - Distance: ${runStats.distanceKm.toFixed(2)} km
-      - Pace: ${runStats.pace} min/km
-      - Duration: ${Math.floor(runStats.durationSeconds / 60)} minutes
+      ${statsText}
 
       Look at the selfie I just took.
       Generate a short, fun, Gen-Z style social media caption (max 20 words) that mentions my effort or the vibe of the photo. 
@@ -31,7 +44,7 @@ export const generateRunCaption = async (
           {
             inlineData: {
               data: cleanBase64,
-              mimeType: 'image/jpeg', 
+              mimeType: 'image/jpeg',
             },
           },
           {
@@ -41,9 +54,9 @@ export const generateRunCaption = async (
       },
     });
 
-    return response.text || "Just finished a run! 🏃‍♂️💨";
+    return response.text || "Just crushed that workout! 💪";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "Crushed it! 💪 (AI is sleeping)";
+    return "Feeling amazing after that session! 🔥 (AI is sleeping)";
   }
 };

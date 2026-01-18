@@ -2,46 +2,64 @@ export interface User {
   id: string;
   name: string;
   avatar: string;
-  weeklyGoalKm: number;
-  streak: number;
+  currentStreak: number;
+  longestStreak: number;
+  totalWorkouts: number;
 }
 
-export interface RunSession {
+export interface WorkoutSession {
   id: string;
   userId: string;
-  distanceKm: number;
+  workoutType: WorkoutType;
+  distanceKm?: number;
   durationSeconds: number;
   timestamp: number;
   date: string;
-  image?: string; // Base64 selfie
+  image?: string;
   aiCaption?: string;
-  pace: string; // min/km
-  streak?: number; // Streak at the time of the run
+  pace?: string;
 }
 
 export interface Friend {
   id: string;
   name: string;
   avatar: string;
-  weeklyDistanceKm: number;
-  totalDistanceKm: number;
+  currentStreak: number;
+  longestStreak: number;
+  totalWorkouts: number;
   isOnline: boolean;
-  streak: number;
 }
 
 export enum AppView {
-  FEED = 'FEED',
-  LEADERBOARD = 'LEADERBOARD',
-  RUN = 'RUN',
-  FRIENDS = 'FRIENDS',
+  HOME = 'HOME',
+  SOCIAL = 'SOCIAL',
+  WORKOUT = 'WORKOUT',
+  RANK = 'RANK',
   PROFILE = 'PROFILE'
 }
 
-export enum RunState {
-  IDLE = 'IDLE',
-  RUNNING = 'RUNNING',
+export enum WorkoutType {
+  RUN = 'RUN',
+  WALK = 'WALK',
+  CYCLING = 'CYCLING',
+  SWIMMING = 'SWIMMING',
+  YOGA = 'YOGA',
+  OTHER = 'OTHER'
+}
+
+export enum WorkoutState {
+  SELECT = 'SELECT',
+  TRACKING = 'TRACKING',
   PAUSED = 'PAUSED',
-  FINISHED = 'FINISHED',
-  CAPTURING = 'CAPTURING',
-  SAVING = 'SAVING'
+  FINISHED = 'FINISHED'
+}
+
+export interface DailyChallenge {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  completed: boolean;
+  targetValue?: number;
+  currentValue?: number;
 }
