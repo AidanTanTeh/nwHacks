@@ -5,19 +5,12 @@ import { Ionicons } from "@expo/vector-icons";
 export default function ProfileScreen() {
   const [goal, setGoal] = useState(0);
 
-  const increaseGoal = () => {
-    setGoal((prev) => prev + 1);
-  };
-
-  const decreaseGoal = () => {
-    setGoal((prev) => Math.max(0, prev - 1));
-  };
+  const increaseGoal = () => setGoal((prev) => prev + 1);
+  const decreaseGoal = () => setGoal((prev) => Math.max(0, prev - 1));
 
   return (
-    // 2. Changed top-level View to ScrollView
-    // 3. Moved padding to contentContainerStyle for better scrolling behavior
-    <ScrollView 
-      className="flex-1 bg-black" 
+    <ScrollView
+      className="flex-1 bg-black"
       contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 64, paddingBottom: 100 }}
       showsVerticalScrollIndicator={false}
     >
@@ -31,13 +24,19 @@ export default function ProfileScreen() {
 
       {/* Avatar */}
       <View className="items-center mt-6">
-        <Image
-          source={{
-            uri: "https://images.unsplash.com/photo-1520975958225-8d3b0b3a2a65?w=200&q=80",
-          }}
-          className="w-24 h-24 rounded-full"
-        />
-        <Text className="text-white text-4xl font-extrabold mt-4">Alex Runner</Text>
+        {/* Outer circle for styling/background */}
+        <View className="w-28 h-28 rounded-full bg-orange-500 items-center justify-center overflow-hidden">
+          <Image
+            source={{ uri: "https://picsum.photos/100/100" }}
+            className="w-32 h-32 rounded-full"
+            style={{ transform: [{ scaleX: -1 }] }} // optional flip
+            resizeMode="cover"
+          />
+        </View>
+
+        <Text className="text-white text-4xl font-extrabold mt-4">
+          Alex Runner
+        </Text>
         <Text className="text-zinc-400 text-lg mt-1">Fitness Enthusiast</Text>
       </View>
 
@@ -60,7 +59,7 @@ export default function ProfileScreen() {
         </View>
       </SectionCard>
 
-      {/* Goal setting */}
+      {/* Goal Setting */}
       <View className="mt-6 rounded-3xl bg-zinc-900/60 px-5 py-5">
         <View className="flex-row items-center gap-3 mb-4">
           <Ionicons name="trophy" size={18} color="#f59e0b" />
