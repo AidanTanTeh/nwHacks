@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { Flame, Trophy, TrendingUp } from "lucide-react-native";
+import { router } from "expo-router";
 
 export default function FeedScreen() {
   return (
@@ -8,7 +9,7 @@ export default function FeedScreen() {
       <View className="flex-row items-center justify-between mb-8">
         <View>
           <Text className="text-white text-3xl font-extrabold">
-            Hey, Alex! 👋
+            Hey, Alex!
           </Text>
           <Text className="text-zinc-400 mt-1">
             Ready to keep the streak alive?
@@ -80,25 +81,13 @@ export default function FeedScreen() {
           <Text className="text-white text-2xl font-bold">
             Today’s Challenges
           </Text>
-          <Text className="text-zinc-500">0/3 Complete</Text>
+          <Text className="text-zinc-500">Incomplete</Text>
         </View>
 
         <Challenge
-          title="30 Minute Workout"
-          subtitle="Complete any 30-minute workout"
-          progress="0/30"
-        />
-
-        <Challenge
-          title="Early Bird"
-          subtitle="Workout before 8 AM"
-        />
-
-        <Challenge
-          title="Share the Love"
-          subtitle="Comment on 3 friends' workouts"
-          progress="1/3"
-          highlight
+          title="2.0 Km Run or Walk"
+          subtitle="Complete a 2.0 Km Run or Walk"
+          progress="0/2000"
         />
       </View>
     </ScrollView>
@@ -117,7 +106,9 @@ function Challenge({
   highlight?: boolean;
 }) {
   return (
-    <TouchableOpacity className="bg-zinc-900 rounded-2xl p-4 mb-4">
+    <TouchableOpacity 
+        className="bg-zinc-900 rounded-2xl p-4 mb-4"
+        onPress={() => router.push("/WorkoutSelectorScreen")}>
       <View className="flex-row justify-between items-center mb-2">
         <View>
           <Text className="text-white font-bold">{title}</Text>

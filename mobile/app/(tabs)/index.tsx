@@ -1,2 +1,2 @@
-import FeedScreen from "../../screens/FeedScreen";
+import FeedScreen from "../FeedScreen";
 export default FeedScreen;
