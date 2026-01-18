@@ -1,20 +1,26 @@
 import { useState } from "react";
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Image, Pressable, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ProfileScreen() {
   const [goal, setGoal] = useState(0);
 
-const increaseGoal = () => {
-  setGoal((prev) => prev + 1);
-};
+  const increaseGoal = () => {
+    setGoal((prev) => prev + 1);
+  };
 
-const decreaseGoal = () => {
-  setGoal((prev) => Math.max(0, prev - 1));
-};
+  const decreaseGoal = () => {
+    setGoal((prev) => Math.max(0, prev - 1));
+  };
 
   return (
-    <View className="flex-1 bg-black px-6 pt-16">
+    // 2. Changed top-level View to ScrollView
+    // 3. Moved padding to contentContainerStyle for better scrolling behavior
+    <ScrollView 
+      className="flex-1 bg-black" 
+      contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 64, paddingBottom: 100 }}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Top bar */}
       <View className="flex-row items-center justify-between">
         <Text className="text-white text-xl font-semibold">Profile</Text>
@@ -55,40 +61,35 @@ const decreaseGoal = () => {
       </SectionCard>
 
       {/* Goal setting */}
-<View className="mt-6 rounded-3xl bg-zinc-900/60 px-5 py-5">
-  {/* Header */}
-  <View className="flex-row items-center gap-3 mb-4">
-    <Ionicons name="trophy" size={18} color="#f59e0b" />
-    <Text className="text-white font-extrabold">Goal Setting</Text>
-  </View>
+      <View className="mt-6 rounded-3xl bg-zinc-900/60 px-5 py-5">
+        <View className="flex-row items-center gap-3 mb-4">
+          <Ionicons name="trophy" size={18} color="#f59e0b" />
+          <Text className="text-white font-extrabold">Goal Setting</Text>
+        </View>
 
-  {/* Goal Row */}
-  <View className="flex-row items-center gap-3 bg-zinc-800/40 rounded-2xl px-4 py-4">
-    {/* Goal text */}
-    <View>
-      <Text className="text-white font-bold text-sm">Current Goal</Text>
-      <Text className="text-zinc-400 text-sm">{goal}.0 km</Text>
-    </View>
+        <View className="flex-row items-center gap-3 bg-zinc-800/40 rounded-2xl px-4 py-4">
+          <View>
+            <Text className="text-white font-bold text-sm">Current Goal</Text>
+            <Text className="text-zinc-400 text-sm">{goal}.0 km</Text>
+          </View>
 
-    {/* Buttons */}
-    <View className="ml-auto flex-row gap-3">
-      <Pressable
-        onPress={decreaseGoal}
-        className="w-10 h-10 rounded-xl bg-zinc-700/40 items-center justify-center"
-      >
-        <Text className="text-white text-2xl font-extrabold">−</Text>
-      </Pressable>
+          <View className="ml-auto flex-row gap-3">
+            <Pressable
+              onPress={decreaseGoal}
+              className="w-10 h-10 rounded-xl bg-zinc-700/40 items-center justify-center"
+            >
+              <Text className="text-white text-2xl font-extrabold">−</Text>
+            </Pressable>
 
-      <Pressable
-        onPress={increaseGoal}
-        className="w-10 h-10 rounded-xl bg-zinc-700/40 items-center justify-center"
-      >
-        <Text className="text-white text-2xl font-extrabold">+</Text>
-      </Pressable>
-    </View>
-  </View>
-</View>
-
+            <Pressable
+              onPress={increaseGoal}
+              className="w-10 h-10 rounded-xl bg-zinc-700/40 items-center justify-center"
+            >
+              <Text className="text-white text-2xl font-extrabold">+</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
 
       {/* Appearance */}
       <View className="mt-6 rounded-3xl bg-zinc-900/60 px-5 py-5 flex-row items-center justify-between">
@@ -101,7 +102,7 @@ const decreaseGoal = () => {
           <Ionicons name="chevron-forward" size={18} color="#71717a" />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
